@@ -1,2 +1,4 @@
-# Avaliacao-Sprint4
-Repositório destinado a resolução das questões referentes a sprint 4
+# Avaliacao Sprint4
+- [x] Entity Framework Core Cidades
+- [x] API Pokemon
+- [x] API Auditoria Pedidos
