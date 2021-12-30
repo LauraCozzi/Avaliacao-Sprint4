@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PokemonAPI.Data;
 using PokemonAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,12 @@ namespace PokemonAPI.Controllers
     {
         private static List<Pokemon> pokemons = new List<Pokemon>();
         private static int id = 1;
+        private PokemonContext _context;
+
+        public PokemonController(PokemonContext context)
+        {
+            _context = context;
+        }
 
         // https://localhost:44302/api/pokemon
         [HttpGet]
@@ -24,13 +31,15 @@ namespace PokemonAPI.Controllers
             }
             Console.WriteLine("Fim da lista de Pokemons:");
 
-            return Ok(pokemons);
+            return Ok(_context.Pokemons);
         }
 
         // https://localhost:44302/api/pokemon
         [HttpPost]
         public IActionResult AdicionaPokemon([FromBody] Pokemon pokemon)
         {
+            _context.Pokemons.Add(pokemon);
+            _context.SaveChanges();
             pokemon.Id = id++;
             pokemons.Add(pokemon);
             return CreatedAtAction(nameof(RecuperaPokemonPorId), new { Id = pokemon.Id }, pokemon);
@@ -51,7 +60,7 @@ namespace PokemonAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeletaPokemon(int id)
         {
-            Pokemon pokemon = pokemons.FirstOrDefault(pokemon => pokemon.Id == id);
+            Pokemon pokemon = _context.Pokemons.FirstOrDefault(pokemon => pokemon.Id == id);
 
             // se diferente de null pokemon de id passado como argumento foi encontrado
             if (pokemon != null)
